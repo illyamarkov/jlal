@@ -7,70 +7,61 @@ function startScrollingText() {
     let text = "JL.AL";
     let propability = 3;
     let lastGeneratedText = "JL.AL";
+    let phase = 0;
 
     function scrollText() {
-        let randomChar = '_';
-        rnum = Math.floor(Math.random() * propability);
-        if (rnum === 0) {
-            randomChar = '-';
+        if (isMouseOver == true){
+            let randomChar = '_';
             rnum = Math.floor(Math.random() * propability);
             if (rnum === 0) {
-                randomChar = '.';
+                randomChar = '-';
                 rnum = Math.floor(Math.random() * propability);
                 if (rnum === 0) {
-                    randomChar = 'L';
+                    randomChar = '.';
                     rnum = Math.floor(Math.random() * propability);
                     if (rnum === 0) {
-                        randomChar = 'J';
+                        randomChar = 'L';
+                        rnum = Math.floor(Math.random() * propability);
+                        if (rnum === 0) {
+                            randomChar = 'J';
+                        }
                     }
                 }
             }
+            lastGeneratedText = lastGeneratedText.slice(1) + randomChar;
+            textElement.textContent = lastGeneratedText;
         }
-        lastGeneratedText = lastGeneratedText.slice(1) + randomChar;
-        textElement.textContent = lastGeneratedText;
-    }
-
-    function resetText() {
-        isResetting = true; // Set the flag to indicate resetting
-        clearInterval(scrollingInterval);
-        const targetText = "JL.AL";
-        let i = 0;
-        const resetInterval = setInterval(() => {
-            if (i < targetText.length) {
-                lastGeneratedText = lastGeneratedText.slice(1) + targetText[i];
+        else {
+            if (phase < text.length) {
+                lastGeneratedText = lastGeneratedText.slice(1) + text[phase];
                 textElement.textContent = lastGeneratedText;
-                i++;
-            } else {
-                clearInterval(resetInterval);
-                isResetting = false; // Reset the flag when reset is complete
+                phase++;
+                console.log("done");
             }
-        }, 100);
+        }
     }
 
     textElement.addEventListener('mouseover', () => {
-        if (!isMouseOver) {
-            clearInterval(scrollingInterval);
-            if (!isResetting) { // Check if not currently resetting
-                scrollingInterval = setInterval(scrollText, 100);
-                isMouseOver = true;
-            }
-        }
+        console.log("found");
+        clearInterval(scrollingInterval);
+        scrollingInterval = setInterval(scrollText, 100);
+        isMouseOver = true;
     });
 
     textElement.addEventListener('mouseout', () => {
-        if (!isResetting) { // Check if not currently resetting
-            resetText();
-            isMouseOver = false;
-        }
+        phase = 0;
+        isMouseOver = false;
     });
 
     textElement.addEventListener('click', () => {
         if (!isMouseOver) {
             clearInterval(scrollingInterval);
-            if (!isResetting) { // Check if not currently resetting
-                scrollingInterval = setInterval(scrollText, 100);
-                isMouseOver = true;
-            }
+            scrollingInterval = setInterval(scrollText, 100);
+            isMouseOver = true;
+        }
+        else {
+            phase = 0;
+            isMouseOver = false;
         }
     });
 }
